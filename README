@@ -1,0 +1,16 @@
+TryAndSave is a small online game mainly for experimenting with Pike for the
+server-side code and C++ for the client-side
+
+The goal is to have a continuous game where many people can come and go as they
+please, saving people in the game from dying and killing swathes of monsters
+to protect them.  Players must keep a radius around a survivor clear for a
+certain period of time until the survivor can be air-lifted out of the area.
+
+Players view the game from a first-person perspective and have access to three
+weapons; a shotgun, a pistol, and an assault rifle.
+
+Three platforms will be supported
+Linux
+Pandora
+Windows
+
