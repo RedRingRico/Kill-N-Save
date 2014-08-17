@@ -1,0 +1,53 @@
+#!/usr/bin/env pike
+
+constant DefaultPort = 8080;
+constant Version = "0.0";
+
+int Counter = 0;
+
+Protocols.HTTP.Server.Port ServerPort;
+
+
+int main( int p_Argc, array( string ) p_Argv )
+{
+	Stdio.UDP	UDPSocket = Stdio.UDP( );
+	write( "Kill-N-Save Server\n" );
+	int PortNumber = DefaultPort;
+
+	write( "KillServe starting on port " + PortNumber + "\n" );
+
+	ServerPort = Protocols.HTTP.Server.Port( HandleRequest, PortNumber );
+
+	if( !UDPSocket->bind( 5096 ) )
+	{
+		write( "Error binding UDP socket: %s\n",
+			strerror( UDPSocket->errno( ) ) );
+	}
+
+	while( 1 )
+	{
+		write( "Getting data\n" );
+		mapping( string:int | string ) Data = UDPSocket->read( );
+		write( "Data:       %s\n", Data[ "data" ]  );
+		write( "IP Address: %s:", Data[ "ip" ] );
+		write( "%d\n", Data[ "port" ] );
+	}
+
+	return -1;
+}
+
+void HandleRequest( Protocols.HTTP.Server.Request p_Request )
+{
+	write( sprintf( "Got request: %O\n", p_Request ) );
+	
+	mapping Response = ( [ ] );
+
+	Response->server = "KillServe " + Version;
+	Response->type = "text/html";
+	Response->error = 200;
+	Response->data = "<h1>KillServe " + Version + "</h1>\n<pre>Visitor count: " + Counter + "</pre>\n";
+	
+	p_Request->response_and_finish( Response );
+	++Counter;
+}
+
